@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>Shopping-E-commerce / Products / products-give-gift-1</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Shopping-E-commerce-/-Products-/-products-give-gift-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group">
+            <g id="products-give-gift-1">
+                <rect id="Rectangle-path" stroke="#A4B1CD" x="0.5" y="14.271" width="4" height="8" rx="0.5"></rect>
+                <path d="M4.5,20.771 C15.028,24.281 11.8,24.381 23.223,18.606 C23.3770818,18.5265427 23.4803694,18.3743833 23.4973396,18.2018531 C23.5143098,18.0293228 23.4426478,17.8599553 23.307,17.752 C22.643179,17.1753289 21.7240239,16.9924106 20.89,17.271 L15.688,19" id="Shape" stroke="#A4B1CD"></path>
+                <path d="M9.5,19.271 L15,19.271 C15.5522847,19.271 16,18.8232847 16,18.271 C16,17.7187153 15.5522847,17.271 15,17.271 L12,17.271 C10.8148015,16.0478809 9.20208739,15.3311191 7.5,15.271 L4.5,15.271" id="Shape" stroke="#A4B1CD"></path>
+                <path d="M10.5,7.271 L10.5,12.771 C10.5,13.0471424 10.7238576,13.271 11,13.271 L20,13.271 C20.2761424,13.271 20.5,13.0471424 20.5,12.771 L20.5,7.271" id="Shape" stroke="#9FEF00"></path>
+                <rect id="Rectangle-path" stroke="#9FEF00" x="9.5" y="4.271" width="12" height="3" rx="0.5"></rect>
+                <line x1="15.5" y1="13.271" x2="15.5" y2="4.271" id="Shape" stroke="#9FEF00"></line>
+                <path d="M18.344,2.857 C17.5059829,3.51366598 16.544143,3.99458591 15.516,4.271 C15.7917425,3.24260189 16.272727,2.28063286 16.93,1.443 C17.809,0.564 18.307,0.7 18.7,1.089 C19.093,1.478 19.223,1.978 18.344,2.857 Z" id="Shape" stroke="#9FEF00"></path>
+                <path d="M12.656,2.857 C13.4940171,3.51366598 14.455857,3.99458591 15.484,4.271 C15.2082575,3.24260189 14.727273,2.28063286 14.07,1.443 C13.191,0.564 12.693,0.7 12.3,1.089 C11.907,1.478 11.777,1.978 12.656,2.857 Z" id="Shape" stroke="#9FEF00"></path>
+            </g>
+        </g>
+    </g>
+</svg>
