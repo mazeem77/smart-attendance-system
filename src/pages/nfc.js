@@ -23,7 +23,7 @@ function App() {
             setLog("Scan started successfully.");
             ndef.onreadingerror = (event) => {
               setLog(
-                "Error! Cannot read data from the NFC tag. Try a different one?",
+                `Error! Cannot read data from the NFC tag. Try a different one? ${event}`
               );
             };
             ndef.onreading = (event) => {
@@ -60,7 +60,6 @@ function App() {
 
         await ndef.scan();
         try {
-          // Let's wait for 5 seconds only.
           await write("Hello World", { timeout: 5_000 });
         } catch (err) {
           setLog("Something went wrong", err);
