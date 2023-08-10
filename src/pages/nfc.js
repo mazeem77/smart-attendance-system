@@ -9,7 +9,6 @@ import Image from "next/image";
 
 function App() {
 
-  const [actions, setActions] = useState(null);
   const dispatch = useDispatch()
   const [option, setOption] = useState()
   const [log, setLog] = useState("Loading")
@@ -56,9 +55,6 @@ function App() {
   }
 
   useEffect(() => {
-    if (scan) {
-      setActions({ scan: null, write: null });
-    }
     dispatch(setMenu(2))
   }, [])
 
