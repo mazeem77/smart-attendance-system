@@ -40,7 +40,7 @@ function App() {
     else {
       try {
         const ndef = new NDEFReader();
-        ndef.onreading = (event) => console.log("We read a tag!");
+        ndef.onreading = (event) => setLog("We read a tag!");
 
         function write(data, { timeout } = {}) {
           return new Promise((resolve, reject) => {
@@ -63,9 +63,9 @@ function App() {
           // Let's wait for 5 seconds only.
           await write("Hello World", { timeout: 5_000 });
         } catch (err) {
-          console.error("Something went wrong", err);
+          setLog("Something went wrong", err);
         } finally {
-          console.log("We wrote to a tag!");
+          setLog("We wrote to a tag!");
         }
 
       } catch (error) {
