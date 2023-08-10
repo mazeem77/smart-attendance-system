@@ -11,8 +11,6 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useDispatch, useSelector } from "react-redux";
-import { setJwt } from "@/features/user/userData";
-import { setUserDetails } from "@/features/user/userData";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -31,7 +29,6 @@ const theme = createTheme({
 });
 
 function Signin() {
-  const jwt = useSelector(state => state.userData.jwt);
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -62,9 +59,7 @@ function Signin() {
   }
 
   useEffect(() => {
-    if (jwt !== null) {
-      window.location.href = "/"
-    }
+
   }, [])
 
   return (

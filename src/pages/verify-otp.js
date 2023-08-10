@@ -6,7 +6,6 @@ function Otp() {
   const [val3, setVal3] = useState("");
   const [val4, setVal4] = useState("");
   const email = useSelector(state => state.userData.email);
-  const jwt = useSelector(state => state.userData.jwt);
 
   let handleFocus = (event) => event.target.select();
 
@@ -43,9 +42,9 @@ function Otp() {
   }
 
   useEffect(() => {
-    if (jwt !== null) {
-      window.location.href = "/"
-    }
+    // if (jwt !== null) {
+    //   window.location.href = "/"
+    // }
   }, [])
 
   return (
