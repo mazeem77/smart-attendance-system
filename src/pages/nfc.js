@@ -40,14 +40,34 @@ function App() {
     else {
       try {
         const ndef = new NDEFReader();
-        ndef
-          .write("Hello World")
-          .then(() => {
-            setLog("Message written.");
-          })
-          .catch((error) => {
-            setLog(`Write failed :-( try again: ${error}.`);
+        ndef.onreading = (event) => console.log("We read a tag!");
+
+        function write(data, { timeout } = {}) {
+          return new Promise((resolve, reject) => {
+            const ctlr = new AbortController();
+            ctlr.signal.onabort = () => reject("Time is up, bailing out!");
+            setTimeout(() => ctlr.abort(), timeout);
+
+            ndef.addEventListener(
+              "reading",
+              (event) => {
+                ndef.write(data, { signal: ctlr.signal }).then(resolve, reject);
+              },
+              { once: true },
+            );
           });
+        }
+
+        await ndef.scan();
+        try {
+          // Let's wait for 5 seconds only.
+          await write("Hello World", { timeout: 5_000 });
+        } catch (err) {
+          console.error("Something went wrong", err);
+        } finally {
+          console.log("We wrote to a tag!");
+        }
+
       } catch (error) {
         setLog("Argh! " + error);
       }
