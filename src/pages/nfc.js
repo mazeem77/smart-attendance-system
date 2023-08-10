@@ -10,28 +10,30 @@ import Image from "next/image";
 function App() {
 
   const [actions, setActions] = useState(null);
-  const { scan, write } = actions || {};
   const dispatch = useDispatch()
   const [option, setOption] = useState()
   const [log, setLog] = useState("Loading")
-
-  const actionsValue = { actions, setActions };
 
   const onHandleAction = async (actions) => {
     if (actions === 0) {
       try {
         const ndef = new NDEFReader();
-        await ndef.scan();
-        setLog("> Scan started");
-
-        ndef.addEventListener("readingerror", () => {
-          setLog("Argh! Cannot read data from the NFC tag. Try another one?");
-        });
-
-        ndef.addEventListener("reading", ({ message, serialNumber }) => {
-          setLog(`> Serial Number: ${serialNumber}`);
-          setLog(`> Records: (${message.records.length})`);
-        });
+        ndef
+          .scan()
+          .then(() => {
+            setLog("Scan started successfully.");
+            ndef.onreadingerror = (event) => {
+              setLog(
+                "Error! Cannot read data from the NFC tag. Try a different one?",
+              );
+            };
+            ndef.onreading = (event) => {
+              setLog("NDEF message read.");
+            };
+          })
+          .catch((error) => {
+            setLog(`Error! Scan failed to start: ${error}.`);
+          });
       } catch (error) {
         setLog("Argh! " + error);
       }
@@ -39,8 +41,14 @@ function App() {
     else {
       try {
         const ndef = new NDEFReader();
-        await ndef.write("Hello world!");
-        setLog("> Message written");
+        ndef
+          .write("Hello World")
+          .then(() => {
+            setLog("Message written.");
+          })
+          .catch((error) => {
+            setLog(`Write failed :-( try again: ${error}.`);
+          });
       } catch (error) {
         setLog("Argh! " + error);
       }
