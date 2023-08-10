@@ -12,7 +12,7 @@ function NavBar() {
     <div className="flex flex-col justify-between items-start h-20 bg-background dark:bg-darkBackground px-20 py-2">
       <div className="h-full w-full flex justify-between items-center">
         <div className="mr-2 text-secondary dark:text-darkSecondary text-[24px] cursor-pointer">
-          <Link href={"/"}>neorix<strong className="ml-[2px] text-main">CTF</strong></Link>
+          <Link href={"/"}>Smart<strong className="ml-[2px] text-main">Attendance</strong></Link>
         </div>
         <div>
           <ul className="flex">
@@ -23,14 +23,14 @@ function NavBar() {
               <div className={"h-[2px] w-[16px] rounded-xl" + (menu === 0 ? " bg-main" : " bg-background dark:bg-darkBackground")}></div>
             </li>
             <li className={"mr-6 flex flex-col justify-center items-center hover:text-main" + (menu === 1 ? " text-main" : " text-secondary dark:text-darkSecondary")}>
-              <Link href={'/challenges'}>
-                Challenges
+              <Link href={'/qr'}>
+                QR
               </Link>
               <div className={"h-[2px] w-[16px] rounded-xl" + (menu === 1 ? " bg-main" : " bg-background dark:bg-darkBackground")}></div>
             </li>
             <li className={"mr-6 flex flex-col justify-center items-center hover:text-main" + (menu === 2 ? " text-main" : " text-secondary dark:text-darkSecondary")}>
-              <Link href={'/leaderboard'}>
-                Leaderboard
+              <Link href={'/nfc'}>
+                NFC
               </Link>
               <div className={"h-[2px] w-[16px] rounded-xl" + (menu === 2 ? " bg-main" : " bg-background dark:bg-darkBackground")}></div>
             </li>

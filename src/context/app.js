@@ -14,7 +14,6 @@ export const AppProvider = ({ children }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [user, setUser] = useState();
-  const jwt = useSelector(state => state.userData.jwt);
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,42 +44,12 @@ export const AppProvider = ({ children }) => {
     setLoading(false)
   }
 
-  async function verifySession() {
-    try {
-      if (jwt) {
-        const token = `Bearer ${jwt}`;
-        const requestOptions = {
-          method: 'GET',
-          headers: {
-            Authorization: token,
-          },
-        };
-
-        const response = await fetch(`${process.env.BASE_URL}/v1/session`, requestOptions);
-        const result = await response.json();
-
-        if (result.success) {
-          setSession(true);
-        } else {
-          setSession(false);
-          dispatch(deleteAll());
-          router.replace('/signin');
-        }
-      } else {
-        dispatch(deleteAll());
-        router.replace('/signin');
-      }
-    } catch (error) {
-      console.error('Error verifying session:', error);
-    }
-  }
 
   useEffect(() => {
-    verifySession();
-    getUserDetails()
+    // getUserDetails()
   }, [loading]);
 
-  const contextValues = { session, jwt, loading, user };
+  const contextValues = { session, loading, user };
 
   return (
     <AppContext.Provider value={contextValues}>

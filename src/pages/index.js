@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { setMenu } from "@/features/menu/counterSlice";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(setMenu(0))
+  })
   return (
     <div>
-      <h1>Home</h1>
-      <div>
-        <a href="/about">About</a>
+      <div className="text-[#00000000]">
       </div>
     </div>
   );

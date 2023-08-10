@@ -1,5 +1,5 @@
 import React from "react";
-import spinner from '../../../public/static/images/svg/spinner.svg'
+import spinner from '../../../public/images/svg/spinner.svg'
 import Image from "next/image";
 
 function Loader() {

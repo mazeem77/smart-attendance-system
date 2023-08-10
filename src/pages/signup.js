@@ -21,17 +21,16 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#64748ba4",
+      main: "#64748b",
     },
     secondary: {
-      main: "#64748ba4",
+      main: "#64748b",
     },
   },
 
 });
 
 function Signup() {
-  const jwt = useSelector(state => state.userData.jwt);
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -55,37 +54,6 @@ function Signup() {
 
     if (password === confirmPassword) {
 
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "username": username,
-        "password": password,
-        "email": email
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-
-      fetch(`${process.env.BASE_URL}/v1/signup`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          if (result.success) {
-            setSeverity("success")
-            setNotification("Signup Success")
-            handleClick()
-            window.location.href = '/signin'
-          } else {
-            setSeverity("warning")
-            setNotification(result.detail[0].msg)
-            handleClick()
-          }
-        })
-        .catch(error => console.log('error', error));
     } else {
       setSeverity("error")
       setNotification("Password and Confirm Password don't match")
@@ -94,9 +62,9 @@ function Signup() {
   }
 
   useEffect(() => {
-    if (jwt !== null) {
-      window.location.href = "/"
-    }
+    // if (jwt !== null) {
+    //   window.location.href = "/"
+    // }
   }, [])
 
   return (
@@ -109,7 +77,7 @@ function Signup() {
       <div className="bg-tertiary p-10 rounded-xl w-[36%]">
         <div>
           <div className="mr-2 mb-4 text-center text-[#CBD5E1] dark:text-[#CBD5E1] text-[48px]">
-            <p>neorix<strong className="ml-[2px] text-main">CTF</strong></p>
+            <p>Smart <strong className="ml-[2px] text-main">Attendance</strong></p>
           </div>
           <div>
             <h1 className="font-[600] text-[36px] text-[#CBD5E1] mb-1">Sign up</h1>
@@ -142,35 +110,35 @@ function Signup() {
             </div>
             <div className="flex justify-center items-center mt-8">
               <div className="ml-2">
-                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-[#0E172A] cursor-pointer">
+                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-main cursor-pointer">
                   <ThemeProvider theme={theme}>
                     <TwitterIcon color="primary" />
                   </ThemeProvider>
                 </div>
               </div>
               <div className="ml-2">
-                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-[#0E172A] cursor-pointer">
+                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-main cursor-pointer">
                   <ThemeProvider theme={theme}>
                     <FacebookSharpIcon color="primary" />
                   </ThemeProvider>
                 </div>
               </div>
               <div className="ml-2">
-                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-[#0E172A] cursor-pointer">
+                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-main cursor-pointer">
                   <ThemeProvider theme={theme}>
                     <GitHubIcon color="primary" />
                   </ThemeProvider>
                 </div>
               </div>
               <div className="ml-2">
-                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-[#0E172A] cursor-pointer">
+                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-main cursor-pointer">
                   <ThemeProvider theme={theme}>
                     <LinkedInIcon color="primary" />
                   </ThemeProvider>
                 </div>
               </div>
               <div className="ml-2">
-                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748ba4] hover:bg-[#0E172A] cursor-pointer">
+                <div className="flex items-center justify-center w-9 h-9 p-2 rounded-md border border-[#64748b] hover:bg-main cursor-pointer">
                   <Image src={discordIcon} alt="Discord Icon" />
                 </div>
               </div>

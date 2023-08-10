@@ -59,20 +59,6 @@ function UserMenu() {
             <li
               onClick={() => {
                 setDropdownOpen(!dropdownOpen)
-                window.location.href = '/team'
-              }
-              } className="hover:bg-main dark:hover:bg-main cursor-pointer"
-            >
-              <div
-                className="font-medium text-sm text-secondary dark:text-darkSecondary hover:text-text dark:hover:text-darkText flex items-center py-1 px-3"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                Team Management
-              </div>
-            </li>
-            <li
-              onClick={() => {
-                setDropdownOpen(!dropdownOpen)
                 window.location.href = '/'
               }
               } className="hover:bg-main dark:hover:bg-main cursor-pointer"
