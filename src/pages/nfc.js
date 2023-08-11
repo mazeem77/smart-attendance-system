@@ -61,10 +61,9 @@ function App() {
 
   useEffect(() => {
     dispatch(setMenu(2))
-    if (user.role = "teacher") {
-      onHandleAction(0)
-      setOption(0)
-    }
+    onHandleAction(0)
+    setOption(0)
+
   }, [])
 
   return (
@@ -74,6 +73,7 @@ function App() {
       <div className="flex justify-center items-center mb-8">
       </div>
       {log}
+      <br />
       SerialNumber: {serialNumber}
       <br />
       Message: {message}
