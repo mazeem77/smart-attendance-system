@@ -1,8 +1,5 @@
 import nfc from '../../public/images/svg/nfc.svg';
-import Scan from '../containers/Scan';
-import Write from '../containers/Write';
 import { useEffect, useState } from 'react';
-import { ActionsContext } from '../context/context';
 import { useDispatch } from "react-redux";
 import { setMenu } from "@/features/menu/counterSlice";
 import Image from "next/image";
@@ -12,6 +9,7 @@ function App() {
   const dispatch = useDispatch()
   const [option, setOption] = useState()
   const [log, setLog] = useState("Loading")
+  const [logArray, setLogArray] = useState([])
 
   const onHandleAction = async (actions) => {
     if (actions === 0) {
@@ -25,9 +23,13 @@ function App() {
               setLog(
                 `Error! Cannot read data from the NFC tag. Try a different one? ${event}`
               );
+              setLogArray(event)
+              console.log('Reading Error', event);
             };
             ndef.onreading = (event) => {
               setLog("NDEF message read.");
+              setLogArray(event)
+              console.log('Reading Error', event);
             };
           })
           .catch((error) => {
@@ -92,6 +94,7 @@ function App() {
         }} className={option === 1 ? "text-main px-8 border-b-2 border-main" : " px-8 border-b-2 border-background"}>Write</button>
       </div>
       {log}
+      {logArray}
     </div>
   );
 }

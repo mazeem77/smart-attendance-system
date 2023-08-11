@@ -19,6 +19,7 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
   }, [loading]);
 
   const contextValues = { session, loading, user };
