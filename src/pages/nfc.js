@@ -8,8 +8,26 @@ function App() {
 
   const dispatch = useDispatch()
   const [option, setOption] = useState()
-  const [log, setLog] = useState("Loading")
-  const [logArray, setLogArray] = useState([])
+  const [log, setLog] = useState("Scanning...")
+  const [message, setMessage] = useState()
+  const [serialNumber, setSerialNumber] = useState()
+
+  const onReading = ({ message, serialNumber }) => {
+    setSerialNumber(serialNumber);
+    for (const record of message.records) {
+      switch (record.recordType) {
+        case "text":
+          const textDecoder = new TextDecoder(record.encoding);
+          setMessage(textDecoder.decode(record.data));
+          break;
+        case "url":
+          // TODO: Read URL record with record data.
+          break;
+        default:
+        // TODO: Handle other records with record data.
+      }
+    }
+  };
 
   const onHandleAction = async (actions) => {
     if (actions === 0) {
@@ -23,12 +41,12 @@ function App() {
               setLog(
                 `Error! Cannot read data from the NFC tag. Try a different one? ${event}`
               );
-              setLogArray(event)
+              onReading(event)
               console.log('Reading Error', event);
             };
             ndef.onreading = (event) => {
               setLog("NDEF message read.");
-              setLogArray(event)
+              onReading(event)
               console.log('Reading Error', event);
             };
           })
@@ -39,44 +57,14 @@ function App() {
         setLog("Argh! " + error);
       }
     }
-    else {
-      try {
-        const ndef = new NDEFReader();
-        ndef.onreading = (event) => setLog("We read a tag!");
-
-        function write(data, { timeout } = {}) {
-          return new Promise((resolve, reject) => {
-            const ctlr = new AbortController();
-            ctlr.signal.onabort = () => reject("Time is up, bailing out!");
-            setTimeout(() => ctlr.abort(), timeout);
-
-            ndef.addEventListener(
-              "reading",
-              (event) => {
-                ndef.write(data, { signal: ctlr.signal }).then(resolve, reject);
-              },
-              { once: true },
-            );
-          });
-        }
-
-        await ndef.scan();
-        try {
-          await write("Hello World", { timeout: 5_000 });
-        } catch (err) {
-          setLog("Something went wrong", err);
-        } finally {
-          setLog("We wrote to a tag!");
-        }
-
-      } catch (error) {
-        setLog("Argh! " + error);
-      }
-    }
   }
 
   useEffect(() => {
     dispatch(setMenu(2))
+    if (user.role = "teacher") {
+      onHandleAction(0)
+      setOption(0)
+    }
   }, [])
 
   return (
@@ -84,17 +72,11 @@ function App() {
       <Image src={nfc} className="w-40 mb-8" alt="logo" />
       <h1 className="font-bold text-main text-2xl mb-8">Actions</h1>
       <div className="flex justify-center items-center mb-8">
-        <button onClick={() => {
-          onHandleAction(0)
-          setOption(0)
-        }} className={option === 0 ? "text-main px-8 border-b-2 border-main" : " px-8 border-b-2 border-background"}>Scan</button>
-        <button onClick={() => {
-          onHandleAction(1)
-          setOption(1)
-        }} className={option === 1 ? "text-main px-8 border-b-2 border-main" : " px-8 border-b-2 border-background"}>Write</button>
       </div>
       {log}
-      {logArray}
+      SerialNumber: {serialNumber}
+      <br />
+      Message: {message}
     </div>
   );
 }
