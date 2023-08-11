@@ -20,11 +20,6 @@ function App() {
           const textDecoder = new TextDecoder(record.encoding);
           setMessage(textDecoder.decode(record.data));
           break;
-        case "url":
-          // TODO: Read URL record with record data.
-          break;
-        default:
-        // TODO: Handle other records with record data.
       }
     }
   };
@@ -45,7 +40,7 @@ function App() {
               console.log('Reading Error', event);
             };
             ndef.onreading = (event) => {
-              setLog("NDEF message read.");
+              setLog(`NDEF message read. ${typeof event} and ${JSON.stringify(event)}`);
               onReading(event)
               console.log('Reading Error', event);
             };
