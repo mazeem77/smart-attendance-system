@@ -12,9 +12,9 @@ function App() {
   const [message, setMessage] = useState()
   const [serialNumber, setSerialNumber] = useState()
 
-  const onReading = ({ message, serialNumber }) => {
+  const onReading = ({ isTrusted, serialNumber }) => {
     setSerialNumber(serialNumber);
-    for (const record of message.records) {
+    for (const record of isTrusted.records) {
       switch (record.recordType) {
         case "text":
           const textDecoder = new TextDecoder(record.encoding);
