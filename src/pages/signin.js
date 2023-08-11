@@ -11,6 +11,7 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useDispatch, useSelector } from "react-redux";
+import { setJwt, setUserDetails } from "@/features/user/userData";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -35,6 +36,7 @@ function Signin() {
   const [loader, setLoader] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [notification, setNotification] = useState("Login Success")
+  const jwt = useSelector((state) => state.userData.jwt);
 
   const handleClick = () => { setOpen(true) };
 
@@ -47,19 +49,56 @@ function Signin() {
 
   // function
 
-  async function getUserDetails() {
+  async function getUserDetails(jwt) {
+    let token = jwt
+    try {
+      const response = await fetch(`api/user`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      const data = await response.json();
+      dispatch(setUserDetails(data))
+      setSeverity("success")
+      setNotification("Login Success")
+      handleClick()
+      window.location.href = "/"
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function signinForm(event) {
+  async function signinForm(event) {
     event.preventDefault()
     setLoader(true)
     const email = event.target.email.value
     const password = event.target.password.value
-    var myHeaders = new Headers();
+
+    const response = await fetch(`api/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password, action: 'signin' }),
+    });
+
+    const data = await response.json();
+    if (data.token) {
+      dispatch(setJwt(data.token))
+      getUserDetails(data.token)
+    }
+    else {
+      setSeverity("error")
+      setNotification(data.message)
+      handleClick()
+    }
   }
 
   useEffect(() => {
-
+    if (jwt !== null) {
+      window.location.href = "/"
+    }
   }, [])
 
   return (

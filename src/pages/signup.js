@@ -35,6 +35,7 @@ function Signup() {
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [notification, setNotification] = useState("Login Success")
+  const jwt = useSelector((state) => state.userData.jwt);
 
   const handleClick = () => { setOpen(true) };
 
@@ -45,15 +46,35 @@ function Signup() {
     setOpen(false);
   };
 
-  function signupForm(event) {
+  async function signupForm(event) {
     event.preventDefault()
     const username = event.target.username.value
     const email = event.target.email.value
+    const role = event.target.role.value
     const password = event.target.password.value
     const confirmPassword = event.target.confirmPassword.value
 
-    if (password === confirmPassword) {
+    const userData = {
+      username,
+      email,
+      role,
+      password,
+    };
 
+    if (password === confirmPassword) {
+      const response = await fetch(`api/user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...userData, action: 'signup' }),
+      });
+
+      const data = await response.json();
+      setSeverity("success")
+      setNotification(data.message)
+      handleClick()
+      window.location.href = "/signin"
     } else {
       setSeverity("error")
       setNotification("Password and Confirm Password don't match")
@@ -62,9 +83,9 @@ function Signup() {
   }
 
   useEffect(() => {
-    // if (jwt !== null) {
-    //   window.location.href = "/"
-    // }
+    if (jwt !== null) {
+      window.location.href = "/"
+    }
   }, [])
 
   return (
@@ -91,6 +112,13 @@ function Signup() {
                 <div className="mb-5">
                   <label htmlFor="email" className="text-gray400 font-[600]">Email</label>
                   <input type="email" name="email" placeholder="Email" id="email" className="mt-2 w-full border-white border-2 rounded-md p-2 text-[#CBD5E1] placeholder:text-gray400 bg-transparent focus:outline-none focus:border-main" />
+                </div>
+                <div className="mb-5">
+                  <label htmlFor="role" className="text-gray400 font-[600]">Role</label>
+                  <select name="role" id="role" className="mt-2 w-full border-white border-2 rounded-md p-2 text-[#CBD5E1] placeholder:text-gray400 bg-transparent focus:outline-none focus:border-main">
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                  </select>
                 </div>
                 <div className="mb-5">
                   <label htmlFor="password" className="text-gray400 font-[600]">Password</label>

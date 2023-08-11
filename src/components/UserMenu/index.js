@@ -53,7 +53,7 @@ function UserMenu() {
         >
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray200">
             <div className="font-medium text-main">{data.username}</div>
-            <div className="text-xs text-secondary dark:text-darkSecondary italic">{data.is_captain ? "Captain" : "Player"}</div>
+            <div className="text-xs text-secondary dark:text-darkSecondary italic">{data.role === "teacher" ? "Teacher" : "Student"}</div>
           </div>
           <ul>
             <li
