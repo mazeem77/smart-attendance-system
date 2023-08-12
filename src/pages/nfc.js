@@ -44,7 +44,7 @@ function App() {
         'Content-Type': 'application/json',
         'Authorization': jwt
       },
-      body: JSON.stringify({ action: 'register', serialNumber })
+      body: JSON.stringify({ action: 'register', serialNumber: serialNumber })
     }).then(response => {
       console.log(response)
       if (response.status === 201) {
@@ -100,10 +100,9 @@ function App() {
   }
 
   useEffect(() => {
-    console.log(user)
     dispatch(setMenu(2))
     handleAction()
-  }, [])
+  }, [log])
 
   return (
     <div className="flex flex-col justify-center items-center mt-40">

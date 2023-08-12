@@ -1,4 +1,4 @@
-import { deleteAll } from "@/features/user/userData";
+import { deleteAll, setUserDetails } from "@/features/user/userData";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,6 +27,7 @@ export const AppProvider = ({ children }) => {
       console.log(response)
       if (response.status === 200) {
         setSession(true)
+        dispatch(setUserDetails(response.data))
         setUser(response.data)
       } else {
         setSession(false)
