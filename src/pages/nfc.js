@@ -28,7 +28,7 @@ function App() {
       console.log(response)
       if (response.status === 200) {
         setLog("Verified!")
-        setMessage("response.data.username")
+        setMessage(JSON.stringify(response.data))
       } else {
         setLog("Error!")
       }
