@@ -105,7 +105,7 @@ function Signup() {
           {notification}
         </Alert>
       </Snackbar>
-      <div className="bg-tertiary p-10 rounded-xl w-[36%]">
+      <div className="bg-tertiary p-10 rounded-xl xl:w-[40%] lg:w-[50%] md:w-[70%] sm:w-[85%] w-[95%]">
         <div>
           <div className="mr-2 mb-4 text-center text-[#CBD5E1] dark:text-[#CBD5E1] text-[48px]">
             <p>Smart <strong className="ml-[2px] text-main">Attendance</strong></p>
