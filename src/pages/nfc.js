@@ -102,7 +102,7 @@ function App() {
   useEffect(() => {
     dispatch(setMenu(2))
     handleAction()
-  }, [log])
+  }, [registerButton])
 
   return (
     <div className="flex flex-col justify-center items-center mt-40">
