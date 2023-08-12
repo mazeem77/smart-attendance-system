@@ -51,7 +51,7 @@ function App() {
         'Content-Type': 'application/json',
         'Authorization': jwt
       },
-      body: JSON.stringify({ action: 'verify', serialNumber: "04:38:63:ca:fa:62:80" })
+      body: JSON.stringify({ action: 'verify', serialNumber })
     }).then(result => result.json().then(async response => {
       if (response.status) {
         setLog(<CheckCircle />)
@@ -151,7 +151,6 @@ function App() {
   useEffect(() => {
     dispatch(setMenu(2))
     handleAction()
-    verifySerialNumber()
   }, [registerButton])
 
   return (
