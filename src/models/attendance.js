@@ -5,7 +5,7 @@ const attendanceSchema = new mongoose.Schema({
   status: { type: Boolean, default: true },
   date: {
     type: Date,
-    default: () => new Date().toJSON().slice(0, 7),
+    default: () => new Date().toJSON().slice(0, 10),
     unique: true,
   },
 

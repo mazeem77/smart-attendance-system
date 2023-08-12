@@ -35,6 +35,19 @@ export default async function handler(req, res) {
     } else {
       res.status(400).json({ status: false, message: 'Invalid action' });
     }
+  } else if (req.method === 'GET') {
+    const { userId } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    try {
+      const attendanceRecords = await Attendance.find({ userId });
+      res.status(200).json(attendanceRecords);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   } else {
     res.status(405).end();
   }
