@@ -24,9 +24,9 @@ export default async function handler(req, res) {
         console.log(user)
 
         await user.save();
-        res.status(201).json({ message: 'User signed up successfully' });
+        res.status(201).json({ status: true, message: 'User signed up successfully' });
       } catch (error) {
-        res.status(400).json(error);
+        res.status(400).json({ status: false, message: error.message });
       }
     }
     else if (req.body.action === 'signin') {
@@ -36,30 +36,30 @@ export default async function handler(req, res) {
         console.log(user)
 
         if (!user) {
-          return res.status(404).json({ message: 'User not found' });
+          return res.status(404).json({ status: false, message: 'User not found' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-          return res.status(401).json({ message: 'Invalid password' });
+          return res.status(401).json({ status: false, message: 'Invalid password' });
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(200).json({ token });
+        res.status(200).json({ status: true, token });
       } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ status: false, message: error.message });
       }
     } else {
-      res.status(400).json({ message: 'Invalid action' });
+      res.status(400).json({ status: false, message: 'Invalid action' });
     }
   }
   else if (req.method === 'GET') {
     try {
       const token = req.headers.authorization;
       if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({ status: false, message: 'Unauthorized' });
       }
 
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -67,12 +67,12 @@ export default async function handler(req, res) {
 
       const user = await User.findById(userId);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ status: false, message: 'User not found' });
       }
 
-      res.status(200).json(user);
+      res.status(200).json({ status: true, data: user });
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ status: false, message: error.message });
     }
   }
 

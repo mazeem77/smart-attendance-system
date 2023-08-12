@@ -61,20 +61,30 @@ function Signup() {
       password,
     };
 
-    if (password === confirmPassword) {
-      const response = await fetch(`api/user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...userData, action: 'signup' }),
-      });
+    const headerOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...userData, action: 'signup' }),
+    }
 
-      const data = await response.json();
-      setSeverity("success")
-      setNotification(data.message)
-      handleClick()
-      window.location.href = "/signin"
+    if (password === confirmPassword) {
+      await fetch(`api/user`, headerOptions).then(
+        result => result.json()
+      ).then(response => {
+        console.log(response)
+        if (response.status) {
+          setSeverity("success")
+          setNotification(response.message)
+          handleClick()
+          window.location.href = "/signin"
+        } else {
+          setSeverity("error")
+          setNotification(response.message)
+          handleClick()
+        }
+      })
     } else {
       setSeverity("error")
       setNotification("Password and Confirm Password don't match")

@@ -23,11 +23,10 @@ export const AppProvider = ({ children }) => {
     await fetch(`api/user`, {
       method: 'GET',
       headers: { Authorization: jwt }
-    }).then(response => {
-      console.log(response)
-      if (response.status === 200) {
+    }).then(result => result.json()).then(async response => {
+      if (response.status) {
         setSession(true)
-        dispatch(setUserDetails(response.data))
+        dispatch(setUserDetails(response))
         setUser(response.data)
       } else {
         setSession(false)

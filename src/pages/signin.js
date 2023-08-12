@@ -49,17 +49,23 @@ function Signin() {
 
   async function getUserDetails(jwt) {
     try {
-      const response = await fetch(`api/user`, {
+      await fetch(`api/user`, {
         method: 'GET',
         headers: { Authorization: jwt }
-      });
-
-      const data = await response.json();
-      dispatch(setUserDetails(data))
-      setSeverity("success")
-      setNotification("Login Success")
-      handleClick()
-      window.location.href = "/"
+      }).then(result => result.json()).then(async response => {
+        console.log(response)
+        if (response.status) {
+          dispatch(setUserDetails(response))
+          setSeverity("success")
+          setNotification("Login Success")
+          handleClick()
+          window.location.href = "/"
+        }
+      }).catch((error) => {
+        console.log(error)
+      }).finally(
+        setLoading(false)
+      )
     } catch (error) {
       console.log(error);
     }
@@ -71,24 +77,30 @@ function Signin() {
     const email = event.target.email.value
     const password = event.target.password.value
 
-    const response = await fetch(`api/user`, {
+    const headerOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password, action: 'signin' }),
-    });
+    }
 
-    const data = await response.json();
-    if (data.token) {
-      dispatch(setJwt(data.token))
-      getUserDetails(data.token)
-    }
-    else {
-      setSeverity("error")
-      setNotification(data.message)
-      handleClick()
-    }
+    const response = await fetch(`api/user`, headerOptions).then(
+      result => result.json()
+    ).then(response => {
+      setLoader(false)
+      if (response.status) {
+        setSeverity("success")
+        setNotification("Login Success")
+        handleClick()
+        dispatch(setJwt(response.token))
+        getUserDetails(response.token)
+      } else {
+        setSeverity("error")
+        setNotification(response.message)
+        handleClick()
+      }
+    })
   }
 
   useEffect(() => {
