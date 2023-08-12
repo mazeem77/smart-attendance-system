@@ -7,12 +7,13 @@ import { useApp } from "@/context/app";
 
 function Selection({ children }) {
   const pagesWithoutLayout = ['/signin', '/signup'];
+  const jwt = useSelector(state => state.userData.jwt);
   const router = useRouter();
   const shouldApplyLayout = pagesWithoutLayout.includes(router.pathname);
 
   return (
     <>
-      {true !== null ?
+      {jwt !== null ?
         !shouldApplyLayout ? (
           <Layout>
             {children}

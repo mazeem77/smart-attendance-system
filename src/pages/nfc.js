@@ -1,64 +1,98 @@
 import nfc from '../../public/images/svg/nfc.svg';
 import { useEffect, useState } from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "@/features/menu/counterSlice";
 import Image from "next/image";
+import { useApp } from "@/context/app";
 
 function App() {
 
   const dispatch = useDispatch()
-  const [option, setOption] = useState()
   const [log, setLog] = useState("Scanning...")
   const [message, setMessage] = useState()
   const [serialNumber, setSerialNumber] = useState()
+  const [registerButton, setRegisterButton] = useState(false)
+  const user = useSelector(state => state.userData.userDetails);
+  const app = useApp()
 
-  const onReading = ({ isTrusted, serialNumber }) => {
-    setSerialNumber(serialNumber);
-    for (const record of isTrusted.records) {
-      switch (record.recordType) {
-        case "text":
-          const textDecoder = new TextDecoder(record.encoding);
-          setMessage(textDecoder.decode(record.data));
-          break;
+  const verifySerialNumber = async (serialNumber) => {
+    await fetch(`api/nfc`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify', serialNumber })
+    }).then(response => {
+      console.log(response)
+      if (response.status === 200) {
+        setLog("Verified!")
+        setMessage(response.data)
+      } else {
+        setLog("Error!")
       }
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const RegisterSerialNumber = async () => {
+    await fetch(`api/nfc`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', serialNumber })
+    }).then(response => {
+      console.log(response)
+      if (response.status === 200) {
+        setLog("Registered!")
+        setRegisterButton(false)
+      } else {
+        setLog("Error!")
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const onReading = ({ serialNumber }) => {
+    setSerialNumber(serialNumber)
+    if (user.nfc) {
+      verifySerialNumber(serialNumber)
+    }
+    else {
+      setLog("New User! Registering...")
+      setRegisterButton(true)
     }
   };
 
-  const onHandleAction = async (actions) => {
-    if (actions === 0) {
-      try {
-        const ndef = new NDEFReader();
-        ndef
-          .scan()
-          .then(() => {
-            setLog("Scan started successfully.");
-            ndef.onreadingerror = (event) => {
-              setLog(
-                `Error! Cannot read data from the NFC tag. Try a different one? ${event}`
-              );
-              onReading(event)
-              console.log('Reading Error', event);
-            };
-            ndef.onreading = (event) => {
-              setLog(`NDEF message read. ${typeof event} and ${JSON.stringify(event)}`);
-              onReading(event)
-              console.log('Reading Error', event);
-            };
-          })
-          .catch((error) => {
-            setLog(`Error! Scan failed to start: ${error}.`);
-          });
-      } catch (error) {
-        setLog("Argh! " + error);
-      }
+  const handleAction = async () => {
+    try {
+      const ndef = new NDEFReader();
+      ndef
+        .scan()
+        .then(() => {
+          setLog("Scan started successfully.");
+          ndef.onreadingerror = (event) => {
+            setLog(
+              `Cannot read data from your NFC tag. Try a different one?`
+            );
+            onReading(event)
+            console.log('Reading Error', event);
+          };
+          ndef.onreading = (event) => {
+            setLog(`Scanned! Verifying...`);
+            onReading(event)
+          };
+        })
+        .catch((error) => {
+          setLog(`Error! Scan failed to start: ${error}.`);
+        });
+    } catch (error) {
+      setLog("Argh! " + error);
     }
   }
 
   useEffect(() => {
+    console.log(user)
     dispatch(setMenu(2))
-    onHandleAction(0)
-    setOption(0)
-
+    handleAction()
   }, [])
 
   return (
@@ -72,6 +106,14 @@ function App() {
       SerialNumber: {serialNumber}
       <br />
       Message: {message}
+      {
+        registerButton ?
+          <button className="bg-main text-white rounded-lg px-4 py-2 mt-4" onClick={() => {
+            RegisterSerialNumber()
+          }
+          }>Register</button>
+          : null
+      }
     </div>
   );
 }

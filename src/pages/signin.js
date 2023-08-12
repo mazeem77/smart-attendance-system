@@ -47,15 +47,11 @@ function Signin() {
     setOpen(false);
   };
 
-  // function
-
   async function getUserDetails(jwt) {
-    let token = jwt
     try {
       const response = await fetch(`api/user`, {
-        headers: {
-          Authorization: token,
-        },
+        method: 'GET',
+        headers: { Authorization: jwt }
       });
 
       const data = await response.json();

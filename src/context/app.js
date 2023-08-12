@@ -1,7 +1,7 @@
+import { deleteAll } from "@/features/user/userData";
+import { useRouter } from "next/router";
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAll, setUserDetails } from "@/features/user/userData";
-import { useRouter } from "next/router";
 
 const AppContext = React.createContext();
 
@@ -11,16 +11,38 @@ export const useApp = () => {
 }
 
 export const AppProvider = ({ children }) => {
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const jwt = useSelector(state => state.userData.jwt);
   const [user, setUser] = useState();
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  async function getUserDetails() {
+    await fetch(`api/user`, {
+      method: 'GET',
+      headers: { Authorization: jwt }
+    }).then(response => {
+      console.log(response)
+      if (response.status === 200) {
+        setSession(true)
+        setUser(response.data)
+      } else {
+        setSession(false)
+        dispatch(deleteAll())
+        router.push("signin")
+      }
+    }).catch((error) => {
+      console.log(error)
+    }).finally(
+      setLoading(false)
+    )
+  }
 
-  }, [loading]);
+  useEffect(() => {
+    getUserDetails()
+  }, []);
 
   const contextValues = { session, loading, user };
 

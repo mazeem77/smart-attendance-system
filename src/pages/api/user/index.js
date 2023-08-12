@@ -1,4 +1,3 @@
-// pages/api/users.js
 import db from '../../../lib/db';
 import User from '../../../models/user';
 import bcrypt from 'bcryptjs';
@@ -58,7 +57,7 @@ export default async function handler(req, res) {
   }
   else if (req.method === 'GET') {
     try {
-      const token = req.headers.authorization; // Assuming the token is sent in the request headers
+      const token = req.headers.authorization;
       if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
