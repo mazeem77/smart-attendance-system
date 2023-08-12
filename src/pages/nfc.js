@@ -12,10 +12,35 @@ function App() {
   const [log, setLog] = useState("Scanning...")
   const [message, setMessage] = useState(<></>)
   const [serialNumber, setSerialNumber] = useState(null)
+  const [attendance, setAttendance] = useState("")
   const [registerButton, setRegisterButton] = useState(false)
   const user = useSelector(state => state.userData.userDetails);
   const jwt = useSelector(state => state.userData.jwt);
   const app = useApp()
+
+  const markAttendance = async (id) => {
+    setAttendance("Marking Your Attendance")
+    const headerOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': jwt
+      },
+      body: JSON.stringify({ action: 'mark', userId: id })
+    }
+
+    await fetch(`api/attendance`, headerOptions)
+      .then(result => result.json()
+        .then(response => {
+          console.log(response)
+          if (response.status) {
+            setAttendance("Attendance Marked")
+          } else {
+            setAttendance("You have already Marked Attendance")
+          }
+        }
+        ))
+  }
 
   const verifySerialNumber = async (serialNumber) => {
     await fetch(`api/nfc`, {
@@ -25,16 +50,17 @@ function App() {
         'Authorization': jwt
       },
       body: JSON.stringify({ action: 'verify', serialNumber })
-    }).then(result => result.json().then(response => {
+    }).then(result => result.json().then(async response => {
       if (response.status) {
         setLog("Verified!")
         setMessage(<div className="text-start border-2 border-main p-8 rounded-xl">
-          <p>Username: {response.message.username}</p>
-          <p>Email: {response.message.email}</p>
-          <p>role: {response.message.role}</p>
-
+          <p className="text-white"><strong className="text-main">Username: </strong>{response.message.username}</p>
+          <p className="text-white"><strong className="text-main">Email: </strong>{response.message.email}</p>
+          <p className="text-white"><strong className="text-main">Role: </strong>{response.message.role}</p>
         </div>)
-        console.log("user:", response.message)
+        if (user.role == "student") {
+          await markAttendance(response.message._id)
+        }
       } else {
         setLog("Error!")
       }
@@ -125,7 +151,6 @@ function App() {
       <br />
       SerialNumber: {serialNumber}
       <br />
-      Message: {message}
       {
         registerButton ?
           <button className="bg-main text-white rounded-lg px-4 py-2 mt-4" onClick={() => {
@@ -134,6 +159,9 @@ function App() {
           }>Register</button>
           : null
       }
+      {message}
+      {attendance ? <p className="text-white"><strong className="text-main">Message: </strong>{attendance}</p> : <></>}
+
     </div>
   );
 }
