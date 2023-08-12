@@ -4,22 +4,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "@/features/menu/counterSlice";
 import Image from "next/image";
 import { useApp } from "@/context/app";
-import { Result } from "postcss";
+import Loader from "@/components/shared/loader";
+import { CancelOutlined, CheckCircle } from "@mui/icons-material";
 
 function App() {
 
   const dispatch = useDispatch()
-  const [log, setLog] = useState("Scanning...")
+  const [log, setLog] = useState(<Loader />)
+  const [logData, setLogData] = useState("Scanning")
   const [message, setMessage] = useState(<></>)
   const [serialNumber, setSerialNumber] = useState(null)
-  const [attendance, setAttendance] = useState("")
+  const [attendance, setAttendance] = useState(null)
   const [registerButton, setRegisterButton] = useState(false)
   const user = useSelector(state => state.userData.userDetails);
   const jwt = useSelector(state => state.userData.jwt);
   const app = useApp()
 
   const markAttendance = async (id) => {
-    setAttendance("Marking Your Attendance")
+    setAttendance(<Loader />)
     const headerOptions = {
       method: 'POST',
       headers: {
@@ -34,9 +36,9 @@ function App() {
         .then(response => {
           console.log(response)
           if (response.status) {
-            setAttendance("Attendance Marked")
+            setAttendance(<CheckCircle />)
           } else {
-            setAttendance("You have already Marked Attendance")
+            setAttendance(<CheckCircle />)
           }
         }
         ))
@@ -49,20 +51,22 @@ function App() {
         'Content-Type': 'application/json',
         'Authorization': jwt
       },
-      body: JSON.stringify({ action: 'verify', serialNumber })
+      body: JSON.stringify({ action: 'verify', serialNumber: "04:38:63:ca:fa:62:80" })
     }).then(result => result.json().then(async response => {
       if (response.status) {
-        setLog("Verified!")
+        setLog(<CheckCircle />)
+        setLogData("Verified!")
         setMessage(<div className="text-start border-2 border-main p-8 rounded-xl">
           <p className="text-white"><strong className="text-main">Username: </strong>{response.message.username}</p>
           <p className="text-white"><strong className="text-main">Email: </strong>{response.message.email}</p>
           <p className="text-white"><strong className="text-main">Role: </strong>{response.message.role}</p>
         </div>)
-        if (user.role == "student") {
+        if (user.role == "teacher") {
           await markAttendance(response.message._id)
         }
       } else {
-        setLog("Error!")
+        setLog(<CancelOutlined />)
+        setLogData("Error!");
       }
     })).catch((error) => {
       console.log(error)
@@ -80,13 +84,16 @@ function App() {
     }).then(response => {
       console.log(response)
       if (response.status === 201) {
-        setLog("Registered!")
+        setLog(<CheckCircle />)
+        setLogData("Registered!")
         setRegisterButton(false)
       } else {
-        setLog("Error!")
+        setLog(<CancelOutlined />)
+        setLogData("Error!");
       }
     }).catch((error) => {
-      console.log(error)
+      setLog(<CancelOutlined />)
+      setLogData(error);
     })
   }
 
@@ -98,14 +105,16 @@ function App() {
     }
     else if (serialNumber !== null) {
       setRegisterButton(true)
-      setLog("New User! Registering...")
-    } else if (user.role === teacher) {
+      setLog(<Loader />);
+      setLogData("New User Detected! Registering")
+    } else if (user.role === "teacher") {
       setRegisterButton(false)
       verifySerialNumber(serialNumber)
     }
     else {
       setRegisterButton(false)
-      setLog("Scanning...")
+      setLog(<Loader />);
+      setLogData("Scanning")
     }
   };
 
@@ -115,53 +124,58 @@ function App() {
       ndef
         .scan()
         .then(() => {
-          setLog("Scan started successfully.");
+          setLog(<Loader />);
+          setLogData("Scanning")
           ndef.onreadingerror = (event) => {
-            setLog(
+            setLog(<CancelOutlined />)
+            setLogData(
               `Cannot read data from your NFC tag. Try a different one?`
             );
             onReading(event)
-            console.log('Reading Error', event);
           };
           ndef.onreading = (event) => {
-            setLog(`Scanned! Verifying...`);
+            setLog(<Loader />)
+            setLogData(`Scanned! Verifying...`);
             onReading(event)
           };
         })
         .catch((error) => {
-          setLog(`Error! Scan failed to start: ${error}.`);
+          setLog(<CancelOutlined />)
+          setLogData(`Error! Scan failed to start: ${error}.`);
         });
     } catch (error) {
-      setLog("Argh! " + error);
+      console.log(error)
     }
   }
 
   useEffect(() => {
     dispatch(setMenu(2))
     handleAction()
+    verifySerialNumber()
   }, [registerButton])
 
   return (
     <div className="flex flex-col justify-center items-center mt-40">
       <Image src={nfc} className="w-40 mb-8" alt="logo" />
-      <h1 className="font-bold text-main text-2xl mb-8">Actions</h1>
-      <div className="flex justify-center items-center mb-8">
+      <h1 className="font-bold text-main text-2xl mb-8">Attendance by NFC</h1>
+      <div className="flex flex-col justify-center items-center mb-8 text-start w-96">
+        <div className="flex flex-col justify-center items-center text-center w-full text-main">
+          {log}
+          {logData}
+        </div>
+        {/* <p className="text-white mt-4"><strong className="text-main">Tag Serial No: </strong>{serialNumber}</p> */}
+        <br />
+        {
+          registerButton ?
+            <button className="bg-main text-white rounded-lg px-4 py-2 mt-4" onClick={() => {
+              RegisterSerialNumber()
+            }
+            }>Register</button>
+            : null
+        }
+        {message}
+        {attendance !== null ? <p className="text-white mt-4 text-center flex justify-center items-center h-4"><strong className="text-main whitespace-nowrap mr-4">Attendance Status: </strong>{attendance}</p> : <></>}
       </div>
-      {log}
-      <br />
-      SerialNumber: {serialNumber}
-      <br />
-      {
-        registerButton ?
-          <button className="bg-main text-white rounded-lg px-4 py-2 mt-4" onClick={() => {
-            RegisterSerialNumber()
-          }
-          }>Register</button>
-          : null
-      }
-      {message}
-      {attendance ? <p className="text-white"><strong className="text-main">Message: </strong>{attendance}</p> : <></>}
-
     </div>
   );
 }
