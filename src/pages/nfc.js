@@ -28,7 +28,7 @@ function App() {
       console.log(response)
       if (response.status === 200) {
         setLog("Verified!")
-        setMessage(response.data)
+        setMessage(response.data.username)
       } else {
         setLog("Error!")
       }
@@ -61,13 +61,18 @@ function App() {
   const onReading = ({ serialNumber }) => {
     setSerialNumber(serialNumber)
     if (user.nfc && serialNumber !== null) {
+      setRegisterButton(false)
       verifySerialNumber(serialNumber)
     }
     else if (serialNumber !== null) {
-      setLog("New User! Registering...")
       setRegisterButton(true)
+      setLog("New User! Registering...")
+    } else if (user.role === teacher) {
+      setRegisterButton(false)
+      verifySerialNumber(serialNumber)
     }
     else {
+      setRegisterButton(false)
       setLog("Scanning...")
     }
   };
