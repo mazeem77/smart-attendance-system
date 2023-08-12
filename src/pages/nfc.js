@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "@/features/menu/counterSlice";
 import Image from "next/image";
 import { useApp } from "@/context/app";
+import { Result } from "postcss";
 
 function App() {
 
@@ -24,15 +25,14 @@ function App() {
         'Authorization': jwt
       },
       body: JSON.stringify({ action: 'verify', serialNumber })
-    }).then(response => {
-      console.log(response)
-      if (response.status === 200) {
+    }).then(result => result.json().then(response => {
+      if (response.status) {
         setLog("Verified!")
         setMessage(JSON.stringify(response.data))
       } else {
         setLog("Error!")
       }
-    }).catch((error) => {
+    })).catch((error) => {
       console.log(error)
     })
   }

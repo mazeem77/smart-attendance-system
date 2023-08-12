@@ -45,21 +45,21 @@ export default async function handler(req, res) {
         const nfcData = await NFC.findOne({ serialNumber });
 
         if (!nfcData) {
-          return res.status(404).json({ message: 'NFC data not found' });
+          return res.status(404).json({ status: false, message: 'NFC data not found' });
         }
 
         const userId = nfcData.userId;
         const user = await users.findById(userId);
         if (!user) {
-          return res.status(404).json({ message: 'User not found' });
+          return res.status(404).json({ status: false, message: 'User not found' });
         }
 
-        res.status(200).json({ data: user });
+        res.status(200).json({ status: true, message: user });
       } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ status: false, message: error });
       }
     } else {
-      res.status(400).json({ message: 'Invalid action' });
+      res.status(400).json({ status: false, message: 'Invalid action' });
     }
   } else {
     res.status(405).end();
