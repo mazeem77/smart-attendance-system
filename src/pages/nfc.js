@@ -99,17 +99,20 @@ function App() {
 
   const onReading = ({ serialNumber }) => {
     setSerialNumber(serialNumber)
-    if (user.nfc && serialNumber !== null) {
+    if (user.role === "teacher") {
       setRegisterButton(false)
       verifySerialNumber(serialNumber)
     }
-    else if (serialNumber !== null) {
-      setRegisterButton(true)
-      setLog(<Loader />);
-      setLogData("New User Detected! Registering")
-    } else if (user.role === "teacher") {
-      setRegisterButton(false)
-      verifySerialNumber(serialNumber)
+    else if (user.role === "student") {
+      if (user.nfc && serialNumber !== null) {
+        setRegisterButton(false)
+        verifySerialNumber(serialNumber)
+      }
+      else if (serialNumber !== null) {
+        setRegisterButton(true)
+        setLog(<Loader />);
+        setLogData("New User Detected! Registering")
+      }
     }
     else {
       setRegisterButton(false)
