@@ -10,15 +10,19 @@ function App() {
   const dispatch = useDispatch()
   const [log, setLog] = useState("Scanning...")
   const [message, setMessage] = useState()
-  const [serialNumber, setSerialNumber] = useState()
+  const [serialNumber, setSerialNumber] = useState(null)
   const [registerButton, setRegisterButton] = useState(false)
   const user = useSelector(state => state.userData.userDetails);
+  const jwt = useSelector(state => state.userData.jwt);
   const app = useApp()
 
   const verifySerialNumber = async (serialNumber) => {
     await fetch(`api/nfc`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': jwt
+      },
       body: JSON.stringify({ action: 'verify', serialNumber })
     }).then(response => {
       console.log(response)
@@ -36,11 +40,14 @@ function App() {
   const RegisterSerialNumber = async () => {
     await fetch(`api/nfc`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': jwt
+      },
       body: JSON.stringify({ action: 'register', serialNumber })
     }).then(response => {
       console.log(response)
-      if (response.status === 200) {
+      if (response.status === 201) {
         setLog("Registered!")
         setRegisterButton(false)
       } else {
@@ -53,12 +60,15 @@ function App() {
 
   const onReading = ({ serialNumber }) => {
     setSerialNumber(serialNumber)
-    if (user.nfc) {
+    if (user.nfc && serialNumber !== null) {
       verifySerialNumber(serialNumber)
     }
-    else {
+    else if (serialNumber !== null) {
       setLog("New User! Registering...")
       setRegisterButton(true)
+    }
+    else {
+      setLog("Scanning...")
     }
   };
 
