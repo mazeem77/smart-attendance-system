@@ -54,6 +54,7 @@ export default async function handler(req, res) {
           return res.status(404).json({ status: false, message: 'User not found' });
         }
 
+        console.log("user:", user)
         res.status(200).json({ status: true, message: user });
       } catch (error) {
         res.status(500).json({ status: false, message: error });

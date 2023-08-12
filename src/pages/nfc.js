@@ -10,7 +10,7 @@ function App() {
 
   const dispatch = useDispatch()
   const [log, setLog] = useState("Scanning...")
-  const [message, setMessage] = useState()
+  const [message, setMessage] = useState(<></>)
   const [serialNumber, setSerialNumber] = useState(null)
   const [registerButton, setRegisterButton] = useState(false)
   const user = useSelector(state => state.userData.userDetails);
@@ -28,7 +28,13 @@ function App() {
     }).then(result => result.json().then(response => {
       if (response.status) {
         setLog("Verified!")
-        setMessage(JSON.stringify(response.data))
+        setMessage(<div className="text-start border-2 border-main p-8 rounded-xl">
+          <p>Username: {response.message.username}</p>
+          <p>Email: {response.message.email}</p>
+          <p>role: {response.message.role}</p>
+
+        </div>)
+        console.log("user:", response.message)
       } else {
         setLog("Error!")
       }
