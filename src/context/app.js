@@ -26,7 +26,7 @@ export const AppProvider = ({ children }) => {
     }).then(result => result.json()).then(async response => {
       if (response.status) {
         setSession(true)
-        dispatch(setUserDetails(response))
+        dispatch(setUserDetails(response.data))
         setUser(response.data)
       } else {
         setSession(false)
