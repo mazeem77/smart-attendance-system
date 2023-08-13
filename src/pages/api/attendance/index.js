@@ -44,7 +44,7 @@ export default async function handler(req, res) {
 
     try {
       const attendanceRecords = await Attendance.find({ userId });
-      res.status(200).json(attendanceRecords);
+      res.status(200).json({ status: true, data: attendanceRecords });
     } catch (error) {
       res.status(500).json(error);
     }
