@@ -12,6 +12,7 @@ const Home = () => {
   const [classStudents, setClassStudents] = useState([])
   const [classes, setClass] = useState()
   const [data, setData] = useState([])
+  const [reload, setReload] = useState(false)
 
   const tableHeaders = ["Sr No.", "Date", "Status"];
   const tableColumns = [
@@ -54,12 +55,12 @@ const Home = () => {
     }).then(result => result.json()).then(async response => {
       if (response.status) {
         if (response.data.length > 0) {
-          setOption(0)
           setClass(response.data[0]._id)
           getClassStudents(response.data[0]._id)
+          setReload(!reload)
         }
       } else {
-        setOption(0)
+        console.log("Error!")
       }
     }).catch((error) => {
       console.log(error)
@@ -78,13 +79,12 @@ const Home = () => {
       body: JSON.stringify(data)
     }
 
-    console.log(headerOptions)
     await fetch(`api/classes`, headerOptions).then(result => result.json()).then(async response => {
       console.log(response)
       if (response.status) {
-        setOption(0)
         setClass(response.data._id)
         getClassStudents(response.data._id)
+        setReload(!reload)
       } else {
         console.log("Error!")
       }
@@ -142,6 +142,7 @@ const Home = () => {
       console.log(response)
       if (response.status) {
         getClassStudents(classes)
+        setReload(!reload)
       } else {
         console.log("Error!")
       }
@@ -163,7 +164,7 @@ const Home = () => {
         getAllStudents()
       }
     }
-  }, [classes])
+  }, [classes, classStudents, allStudents, option])
 
   if (user.role === "student") {
     return (
